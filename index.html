@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DMX Table Viewer</title>
+    <meta name="description" content="table editor">
+    <meta name="author" content="Danny Gräf">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/filerepo/dmx/table-viewer/dist/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="/filerepo/dmx/table-viewer/dist/css/index.css">
+    <script src="/filerepo/dmx/table-viewer/dist/requirejs/require.js" data-main="/filerepo/dmx/table-viewer/dist/js/index.js"></script>
+    <script type="text/html" id="compositeTemplate">
+      <!-- ko if: $root.getStore().isTypeActiveValue(type)-->
+      <td><span data-bind="text: value, attr: { id: id }"></span></td>
+      <!-- /ko-->
+      <!-- ko template: { name: "compositeTemplate", foreach: composite }-->
+      <!-- /ko-->
+    </script>
+    <script type="text/html" id="childTemplate">
+      <input type="checkbox" data-bind="checked: isActive">»<a href="#" rel="tooltip" data-bind="text: name, click: $root.chooseType, attr: { title: uri + &quot; / &quot; + dataType }"></a>
+    </script>
+    <script type="text/html" id="childTypeTemplate">
+      <!-- ko template: { name: "childTemplate", data: c }-->
+      <!-- /ko-->
+      <ul data-bind="foreach: c.childTypes">
+        <li data-bind="template: { name: &quot;childTypeTemplate&quot;, data: { c: $data, p: $parent.c } }"></li>
+      </ul>
+    </script>
+  </head>
+  <body style="display: none">
+    <div id="dialog" class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 data-bind="text: getDialog().getTitle" class="modal-title"></h3>
+          </div>
+          <div class="modal-body">
+            <p data-bind="text: getDialog().getMessage"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" data-toggle="collapse" data-target="#navbar" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#" class="navbar-brand">DMX Table Viewer</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul data-bind="visible: getStore().getTypes().length &gt; 0" class="nav navbar-nav">
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><span data-bind="text: getActualDataTypeName()"></span><b class="caret"></b></a>
+              <ul data-bind="foreach: getStore().getDataTypes" class="dropdown-menu">
+                <li><a href="#" data-bind="text: name, click: $parent.chooseDataType"></a></li>
+              </ul>
+            </li>
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><span data-bind="text: getActualTypeName()"></span><b class="caret"></b></a>
+              <ul data-bind="foreach: getStore().getTypes" class="dropdown-menu">
+                <li data-bind="visible: isInMenu()"><a href="#" data-bind="click: $parent.chooseType"><span data-bind="text: name"></span> -<span data-bind="text: uri"></span></a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="col-xs-3">
+          <p data-bind="visible: !getStore().getType()">type info</p>
+          <section data-bind="with: getStore().getType">
+            <h2><img data-bind="attr: {src: icon}"><span data-bind="text: name, attr: {id: id}"></span>
+            </h2><span data-bind="text: uri"></span>
+            <section data-bind="visible: parentTypes.length &gt; 0">
+              <h3>Parent types</h3>
+              <ul data-bind="foreach: parentTypes">
+                <li><a href="#" data-bind="text: name, click: $root.chooseType"></a>
+                </li>
+              </ul>
+            </section>
+            <section data-bind="visible: childTypes.length &gt; 0">
+              <h3>Childs</h3>
+              <ul data-bind="foreach: childTypes">
+                <li data-bind="template: { name: &quot;childTypeTemplate&quot;, data: { c: $data, p: $parent } }"></li>
+              </ul>
+            </section>
+          </section>
+        </div>
+        <div class="col-xs-9">
+          <p data-bind="visible: !getStore().getType()">choose a type</p>
+          <p data-bind="visible: getStore().getTopics().length == 0">empty topic list</p>
+          <table data-bind="visible: getStore().getTopics().length &gt; 0" class="table table-bordered">
+            <thead data-bind="foreach: getStore().getHeaderRows">
+              <tr data-bind="foreach: $data">
+                <!-- ko if: isVisible()-->
+                <th data-bind="attr: { colspan: cols, rowspan: rows }"><span data-bind="text: type.name"></span></th>
+                <!-- /ko-->
+              </tr>
+            </thead>
+            <!-- ko foreach: getStore().getTopics-->
+            <tbody data-bind="attr: { id: id }">
+              <tr>
+                <th><span data-bind="text: value"></span></th>
+                <!-- ko template: { name: "compositeTemplate", foreach: composite }-->
+                <!-- /ko-->
+              </tr>
+            </tbody>
+            <!-- /ko-->
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

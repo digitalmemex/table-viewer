@@ -1,0 +1,13 @@
+{
+  "name": "table-viewer-deps",
+  "version": "0.0.1",
+  "description": "topic table viewer",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-bower-task": "^0.4.0",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-jade": "^0.14.1",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
