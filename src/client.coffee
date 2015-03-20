@@ -33,11 +33,15 @@ define ['jquery'], ($) ->
     detachTopic part for typeUri, part of composite
 
   detachTopic = (topic) ->
-    id: topic.id
-    type: topic.type_uri
-    uri: topic.uri
-    value: topic.value
-    composite: detachComposite topic.childs
+    if $.isArray topic
+      t = topic.pop()
+    else
+      t = topic
+    id: t.id
+    type: t.type_uri
+    uri: t.uri
+    value: t.value
+    composite: detachComposite t.childs
 
   detachType = (type) ->
     for vc in type.view_config_topics

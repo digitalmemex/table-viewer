@@ -47,12 +47,18 @@ define(['jquery'], function($) {
     return results;
   };
   detachTopic = function(topic) {
+    var t;
+    if ($.isArray(topic)) {
+      t = topic.pop();
+    } else {
+      t = topic;
+    }
     return {
-      id: topic.id,
-      type: topic.type_uri,
-      uri: topic.uri,
-      value: topic.value,
-      composite: detachComposite(topic.childs)
+      id: t.id,
+      type: t.type_uri,
+      uri: t.uri,
+      value: t.value,
+      composite: detachComposite(t.childs)
     };
   };
   detachType = function(type) {
